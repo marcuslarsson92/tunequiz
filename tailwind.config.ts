@@ -1,3 +1,4 @@
+import { Montserrat } from "next/font/google";
 import type { Config } from "tailwindcss";
 
 export default {
@@ -8,11 +9,19 @@ export default {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        Montserrat: ["Montserrat", "sans-serif"],
+      },
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
       },
     },
   },
-  plugins: [],
+  plugins: [
+    require('daisyui'),
+  ],
+  daisyui: {
+    themes: ['luxary'],
+  },
 } satisfies Config;
