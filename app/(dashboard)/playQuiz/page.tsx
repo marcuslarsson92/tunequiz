@@ -4,7 +4,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import { useQuiz } from '../providers';
+import { useQuiz } from '../../providers';
 
 
 export default function PlayQuiz() {
@@ -119,7 +119,7 @@ export default function PlayQuiz() {
   }
 
   return (
-    <div className="text-white p-4">
+    <div className="text-white ml-48 mr-20">
       <h1 className="text-2xl font-bold mb-4">Let's Play!</h1>
 
       {allQuestionsAnswered ? (

@@ -3,9 +3,10 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useSession, signOut } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import Image from 'next/image';
-import { useQuiz } from '../providers';
+import { useQuiz } from '../../providers';
+import SideBar from '../../components/SideBar';
 
 
 
@@ -81,12 +82,18 @@ export default function CreateQuiz() {
 
   if (isLoading) {
     return (
-    <div className='flex items-center justify-center'>
-      <h1 className='mb-6 mt-6'>Prepare for your quiz, take a sip, it's loading...</h1>
-      <span className="loading loading-ring loading-xs"></span>
-      <span className="loading loading-ring loading-sm"></span>
-      <span className="loading loading-ring loading-md"></span>
-      <span className="loading loading-ring loading-lg"></span>
+      <div className="flex flex-col items-center justify-center">
+      
+      <h1 className="mb-4 mt-6 text-center">Prepare for your quiz, take a sip, it's loading...</h1>
+
+      
+      <div className="flex gap-2">
+        <span className="loading loading-ring loading-lg"></span>
+        <span className="loading loading-ring loading-lg"></span>
+        <span className="loading loading-ring loading-lg"></span>
+        <span className="loading loading-ring loading-lg"></span>
+        <span className="loading loading-ring loading-lg"></span>
+      </div>
     </div>
 )
   }
@@ -116,7 +123,7 @@ export default function CreateQuiz() {
               placeholder={`Artist ${index + 1}`}
               value={artist}
               onChange={(e) => handleArtistChange(e.target.value, index)}
-              className="w-full p-2 mb-2 rounded border border-gray-300 text-black"
+              className="flex flex-col w-64 p-2 mb-2 rounded border border-gray-300 text-black"
             />
           ))}
         </div>
@@ -142,12 +149,6 @@ export default function CreateQuiz() {
             disabled={isLoading}
           >
             {isLoading ? 'Generating...' : 'Create Quiz'}
-          </button>
-        </div>
-        {/* Sign out button */}
-        <div className="mt-4">
-          <button onClick={() => signOut()} className="btn btn-secondary">
-            Sign Out
           </button>
         </div>
       </div>

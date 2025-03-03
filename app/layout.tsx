@@ -29,15 +29,18 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      
-      <body
+            <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen bg-gradient-to-b from-black to-blue-900 flex flex-col`}
       >
-        <Header />
-        <main className="flex-grow flex flex-col items-center justify-center">
-        <Providers>{children}</Providers>
-        </main>
-        <Footer />
+        <Providers>
+          {/* Center everything inside a flex container */}
+          <div className="flex flex-col items-center w-full">
+            <Header />
+            <main className="flex-grow flex flex-col items-center justify-center w-full">
+              {children}
+            </main>
+          </div>
+        </Providers>
       </body>
     </html>
   );

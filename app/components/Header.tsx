@@ -6,7 +6,7 @@ const Header = () => {
   return (
     <header className="w-full">
       {/* Headerbild med en container som anpassar sig för mobiler */}
-      <div className="relative w-full h-48 md:h-64 lg:h-80">
+      <div className="relative w-full h-80 md:h-80 lg:h-80">
         <Image
           src="/images/header.jpg" // Placera bilden i public/images/
           alt="Header Background"
@@ -17,9 +17,7 @@ const Header = () => {
       </div>
 
       {/* Text under bilden */}
-      <div className="text-center py-4">
-        <h1 className="text-[#227cbd] text-2xl md:text-4xl font-bold font-[var(--font-geist-sans)]">TuneQuiz</h1>
-      </div>
+        <h1 className="text-[#227cbd] text-center py-4 text-4xl md:text-4xl font-bold">TuneQuiz</h1>
     </header>
   );
 };
