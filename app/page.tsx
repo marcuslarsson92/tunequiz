@@ -4,12 +4,11 @@
 import { useEffect } from "react";
 import { useSession, signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import Header from "./components/Header";
 
 export default function Home() {
   const { data: session, status } = useSession();
   const router = useRouter();
-  console.log("Status from useSession: " + session);
+
 
   // Om användaren redan är inloggad, omdirigera till CreateQuiz-sidan.
   useEffect(() => {
@@ -18,6 +17,14 @@ export default function Home() {
     }
   }, [status, router]);
 
+  if (status === "loading") {
+    return (
+      <div className="flex flex-col items-center justify-center">
+        <h1 className="mb-8 mt-8">Loading...</h1>
+        <span className="loading loading-infinity loading-xl"></span>
+      </div>
+    );
+  }
   return (
     <>
       <div className="mt-8">

@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useSession, signOut } from 'next-auth/react';
 import Image from 'next/image';
+import { useQuiz } from '../providers';
 
 
 
@@ -14,10 +15,15 @@ export default function CreateQuiz() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const email = searchParams.get('email') || '';
+  const [isLoading, setIsLoading] = useState(false);
 
-  // State for quiz creation
+  
+  const { setQuizData } = useQuiz();
   const [artists, setArtists] = useState<string[]>(['']);
   const [nbrQuestions, setNbrQuestions] = useState<number>(10);
+
+  console.log("Inside Create Quiz, expires at: " + session?.expiresAt);
+  
 
   // Redirect unauthenticated users to login
   useEffect(() => {
@@ -43,6 +49,9 @@ export default function CreateQuiz() {
       alert('Please enter at least one artist.');
       return;
     }
+
+    setIsLoading(true);
+
     try {
       const response = await fetch('/api/gpt', {
         method: 'POST',
@@ -57,16 +66,29 @@ export default function CreateQuiz() {
       }
       const data = await response.json();
       console.log('Quiz generated:', data);
-      router.push(`/playQuiz?quizData=${encodeURIComponent(JSON.stringify(data))}`);
+
+      // Sets the response with setQuizData context and then navigate to playQuiz
+      setQuizData(data);
+      router.push('/playQuiz')
+
     } catch (error: any) {
       console.error('Error generating quiz:', error);
       alert(`Error generating quiz: ${error.message}`);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  // Show loading screen while checking authentication
-  if (status === 'loading') {
-    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+  if (isLoading) {
+    return (
+    <div className='flex items-center justify-center'>
+      <h1 className='mb-6 mt-6'>Prepare for your quiz, take a sip, it's loading...</h1>
+      <span className="loading loading-ring loading-xs"></span>
+      <span className="loading loading-ring loading-sm"></span>
+      <span className="loading loading-ring loading-md"></span>
+      <span className="loading loading-ring loading-lg"></span>
+    </div>
+)
   }
 
   return (
@@ -113,8 +135,13 @@ export default function CreateQuiz() {
         </div>
         {/* Button to create the quiz */}
         <div>
-          <button onClick={generateQuiz} className="btn btn-primary">
-            Create Quiz
+          <button
+            onClick={generateQuiz}
+            // DaisyUI trick: "btn btn-primary loading" to show a spinner on the button
+            className={`btn btn-primary ${isLoading ? 'loading-md' : ''}`}
+            disabled={isLoading}
+          >
+            {isLoading ? 'Generating...' : 'Create Quiz'}
           </button>
         </div>
         {/* Sign out button */}

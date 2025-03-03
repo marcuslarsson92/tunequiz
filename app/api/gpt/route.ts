@@ -17,9 +17,9 @@ async function generateQuiz(artists: string[], nbrQuestions: number = 10): Promi
 
   const prompt = `
 You are to generate a quiz based on the following artists: ${artistsString}.
-
+Don't make the artists the options, provide instead a question that is about one of the artists.
 Please create a quiz of ${nbrQuestions} multiple-choice questions. Independently of how many artists there are,
-if there are fewer artists than questions, create one question per artist and then randomly choose some artists to generate an additional question.
+if there are fewer artists than questions, create one question per artist and then randomly choose some artists from provided list to generate an additional question.
 Each question should have:
 
 - A question text.
@@ -32,7 +32,8 @@ Format the output as a JSON object with the following structure without any code
 
 {
   "questions": [
-    {
+    { 
+      "artist": "The artist of whom the question is about"
       "questionText": "Question text here",
       "options": [
         "A) Option A text",

@@ -1,3 +1,4 @@
+// app/api/auth/[...nextauth]/route.ts
 import NextAuth, { NextAuthOptions } from "next-auth";
 import SpotifyProvider from "next-auth/providers/spotify";
 
@@ -9,6 +10,7 @@ const scopes = [
   "user-read-email",
   "user-library-read",
   "user-read-recently-played",
+  "user-read-private",
   "user-top-read",
   "playlist-read-private",
   "playlist-read-collaborative",
