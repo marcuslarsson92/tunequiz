@@ -6,7 +6,6 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import { useQuiz } from '../../providers';
-import SideBar from '../../components/SideBar';
 
 
 
@@ -23,7 +22,8 @@ export default function CreateQuiz() {
   const [artists, setArtists] = useState<string[]>(['']);
   const [nbrQuestions, setNbrQuestions] = useState<number>(10);
 
-  console.log("Inside Create Quiz, expires at: " + session?.expiresAt);
+  console.log("Inside Create Quiz, TOKEN: " + session?.accessToken);
+
   
 
   // Redirect unauthenticated users to login

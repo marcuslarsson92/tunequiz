@@ -1,7 +1,7 @@
 // app/(dashboard)/layout.tsx
 "use client";
 import React from "react";
-import CollapsibleSideBar from "../components/CollapsibleSideBar";
+import SideBar from "../components/SideBar";
 import Footer from "../components/Footer";
 
 /**
@@ -14,7 +14,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   return (
     <div className="min-h-screen w-full">
       {/* Collapsible Sidebar positioned absolutely */}
-      <CollapsibleSideBar />
+      <SideBar />
 
       {/* The main content area with fixed left padding */}
       <div className="ml-2 flex flex-col">
