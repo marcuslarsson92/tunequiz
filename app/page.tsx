@@ -10,7 +10,7 @@ import Footer from "./components/Footer";
  * If the user is already authenticated, we redirect them to /createQuiz (the dashboard).
  */
 export default function Home() {
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const router = useRouter();
 
   useEffect(() => {

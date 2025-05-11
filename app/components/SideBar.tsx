@@ -10,7 +10,6 @@ import {
   UserCircleIcon, 
   ArrowLeftEndOnRectangleIcon,
   Bars3Icon,
-  XMarkIcon,
   ChevronLeftIcon,
 } from '@heroicons/react/24/outline';
 
