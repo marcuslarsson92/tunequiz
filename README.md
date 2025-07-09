@@ -1,36 +1,117 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🎶 TuneQuiz
 
-## Getting Started
+*Generate AI‑powered music quizzes from your favourite artists, play them in‑browser via Spotify, and share the results with friends.*
 
-First, run the development server:
+---
+
+## ✨ Features
+
+* **Spotify Auth** – secure login with your Spotify account (`NextAuth.js + SpotifyProvider`)
+* **OpenAI Quiz Generator** – GPT‑4 (o4‑mini‑high) creates custom multiple‑choice quizzes
+* **React Server Components** – App Router (Next 15) for fast, SEO‑friendly pages
+* **Tailwind CSS + daisyUI** – clean UI with pre‑built component styles
+* **Spotify Web Playback SDK** – optional in‑browser music snippets
+* **Full TypeScript** – strict linting (`@typescript-eslint/no‑explicit‑any`)
+* **Ready for Vercel** – zero‑config serverless deployment
+
+---
+
+## 🗂️ Tech Stack
+
+| Area      | Choice                            |
+| --------- | --------------------------------- |
+| Framework | Next.js 15 (App Router)           |
+| Language  | TypeScript 5                      |
+| Styling   | Tailwind CSS v3 + daisyUI 4       |
+| Auth      | NextAuth.js 5 / Spotify OAuth     |
+| AI        | OpenAI API (GPT‑4 "o4‑mini‑high") |
+| Playback  | Spotify Web Playback SDK          |
+
+---
+
+## ⚡ Quick Start
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# 1 · Clone and install
+git clone https://github.com/your‑handle/tunequiz.git
+cd tunequiz
+npm install
+
+# 2 · Create environment config
+cp .env.local.example .env.local
+# → fill in keys (see below)
+
+# 3 · Develop with hot reload
+npm run dev      # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🚀 Production
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build    # optimise & type‑check
+npm run start    # serve production build at :3000
+```
 
-## Learn More
+### Deploying to Vercel
 
-To learn more about Next.js, take a look at the following resources:
+1. Push the repo to GitHub / GitLab.
+2. **Import project** in Vercel dashboard.
+3. Add the environment variables (below).
+4. Click **Deploy** – done!
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🔑 Environment Variables
 
-## Deploy on Vercel
+| Key                     | Purpose                                         |
+| ----------------------- | ----------------------------------------------- |
+| `NEXTAUTH_URL`          | e.g. `http://localhost:3000` or your Vercel URL |
+| `NEXTAUTH_SECRET`       | random 32‑char string                           |
+| `SPOTIFY_CLIENT_ID`     | Spotify Dev Portal → **Client ID**              |
+| `SPOTIFY_CLIENT_SECRET` | Spotify Dev Portal → **Client Secret**          |
+| `OPENAI_API_KEY`        | OpenAI account API key                          |
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+`.env.local.example` contains a template.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## 📂 Project Structure (simplified)
+
+```
+app/
+ ├ api/
+ │   ├ auth/[...nextauth]/route.ts   # NextAuth (Spotify)
+ │   └ gpt/route.ts                  # OpenAI quiz generator
+ ├ createQuiz/
+ │   ├ page.tsx                      # Server Component route
+ │   └ CreateQuizClient.tsx          # 'use client' + Suspense
+ ├ playQuiz/page.tsx                 # Quiz player
+ └ layout.tsx / globals.css
+components/                           # Re‑usable UI widgets
+lib/                                  # authOptions, helpers
+providers/                            # React context for quiz state
+public/
+```
+
+---
+
+## 🏃 NPM Scripts
+
+| Script          | What it does                              |
+| --------------- | ----------------------------------------- |
+| `npm run dev`   | Dev server with hot reload (`next dev`)   |
+| `npm run build` | Type‑check, lint, optimise (`next build`) |
+| `npm run start` | Run compiled app (`next start`)           |
+| `npm run lint`  | ESLint + TypeScript rules                 |
+
+---
+
+
+### 🙏 Acknowledgements
+
+* [Next.js](https://nextjs.org)
+* [OpenAI](https://openai.com)
+* [Spotify Developer Platform](https://developer.spotify.com)
+* [daisyUI](https://daisyui.com)
