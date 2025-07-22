@@ -55,6 +55,25 @@ export default function CreateQuizClient() {
     } finally {
       setIsLoading(false);
     }
+
+    await fetch('/api/users/save',{
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        name: session?.user?.name,
+        email: session?.user?.email,
+        artists: artistsToSend
+      })
+    });
+
+    await fetch('/api/users/updateArtists', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: session?.user?.email,
+        artists: artistsToSend,
+      }),
+    });
   };
 
   if (isLoading) {
