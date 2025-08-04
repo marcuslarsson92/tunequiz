@@ -1,3 +1,4 @@
+// app/api/users/updateArtist/route.ts
 import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/mongodb';
 import User from '@/models/User';
@@ -10,26 +11,27 @@ export async function POST(req: Request) {
 
   await dbConnect();
 
-  // Hämta eller skapa user
+  // Get or create the user
   const user = await User.findOneAndUpdate(
     { email },
     {},
     { upsert: true, new: true }
   );
 
+  // Increment count if artist exist or add new
   artists.forEach((artistName: string) => {
-    // Finns artisten redan?
+    // Does the artist already exist?
     const found = user.artists.find((a: any) => a.name === artistName);
     if (found) {
       console.log(`Inside forEach in updateArtists. \n
         found artists is: `, found);
-      found.count += 1;                   // öka räknaren
+      found.count += 1;   
     } else {
       user.artists.push({ name: artistName, count: 1 });
     }
   });
 
-  // Sortera efter count (högst först) och kapa till 5 st
+  // Sort the count, highest first and slice at 5 to get top5
   user.artists.sort((a: any, b: any) => b.count - a.count);
   user.artists = user.artists.slice(0, 5);
 

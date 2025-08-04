@@ -10,8 +10,7 @@ import { useQuiz } from '../../providers';
 export default function CreateQuizClient() {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const email = searchParams.get('email') ?? '';
+  const email = session?.user?.email ?? "";
   const [isLoading, setIsLoading] = useState(false);
   const { setQuizData } = useQuiz();
   const [artists, setArtists] = useState<string[]>(['']);
@@ -31,6 +30,7 @@ export default function CreateQuizClient() {
     });
   };
 
+  // Manually generate quiz 
   const generateQuiz = async () => {
     const artistsToSend = artists.filter(a => a.trim());
     if (!artistsToSend.length) {
@@ -60,8 +60,7 @@ export default function CreateQuizClient() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json'},
       body: JSON.stringify({
-        name: session?.user?.name,
-        email: session?.user?.email,
+        email: email,
         artists: artistsToSend
       })
     });
@@ -70,11 +69,45 @@ export default function CreateQuizClient() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        email: session?.user?.email,
+        email: email,
         artists: artistsToSend,
       }),
     });
   };
+
+  // Auto generate based on top artists from database
+  const generateAutoQuiz = async () => {
+
+    const res = await fetch('/api/users/topArtists', {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json'},
+    });
+
+    const data = await res.json();
+    const artistsToSend = data.topArtists;
+
+    console.log("Top 5: " + artistsToSend);
+    
+    setIsLoading(true);
+    try {
+      const res = await fetch('/api/gpt', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ artists: artistsToSend, nbrQuestions: 5 }),
+      });
+      if (!res.ok) throw new Error(res.statusText);
+      const data = await res.json();
+      setQuizData(data);
+      router.push('/playQuiz');
+    } catch (err: unknown) {
+        const message =
+        err instanceof Error ? err.message : 'Unknown error';
+      alert(`Error generating quiz: ${message}`);
+    } finally {
+      setIsLoading(false);
+    }
+   
+  }
 
   if (isLoading) {
     return (
@@ -131,6 +164,13 @@ export default function CreateQuizClient() {
         disabled={isLoading}
       >
         {isLoading ? 'Generating…' : 'Create Quiz'}
+      </button>
+      <button
+        onClick={generateAutoQuiz}
+        className={`btn btn-primary ml-2 ${isLoading ? 'loading' : ''}`}
+        disabled={isLoading}
+      >
+        {isLoading ? 'Generating…' : 'Create Quiz Based on top 5'}
       </button>
     </div>
   );

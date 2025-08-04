@@ -5,17 +5,13 @@ import { useSession, signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Footer from "./components/Footer";
 
-/**
- * This is our home page.
- * If the user is already authenticated, we redirect them to /createQuiz (the dashboard).
- */
+// If the user is already authenticated, we redirect them to /createQuiz
 export default function Home() {
   const { status } = useSession();
   const router = useRouter();
 
   useEffect(() => {
     if (status === "authenticated") {
-      // If user is logged in, go to dashboard
       router.push("/createQuiz");
     }
   }, [status, router]);

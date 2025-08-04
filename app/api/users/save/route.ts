@@ -1,22 +1,38 @@
 // app/api/users/save/route.ts
 import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/mongodb';
-import User from '@/models/User';
+import User, { IUser } from '@/models/User';
+
+type Artist = {
+  name: string,
+  count: number
+};
 
 export async function POST(req: Request) {
   await dbConnect();
-  const body = await req.json();
-  const { name, email, artists } = body;
+  const { email, artists } = await req.json();
+  
 
-  if (!email) {
-    return NextResponse.json({ error: 'Email is required' }, { status: 400 });
+  if (!email || !Array.isArray(artists)) {
+    return NextResponse.json({ error: 'Email is required, or bad input on artists' }, { status: 400 });
   }
 
   const user = await User.findOneAndUpdate(
     { email },
-    { name, email, $addToSet: { artists: { $each: artists || [] } } },
+    {},
     { new: true, upsert: true }
-  );
+  ) as IUser;
+
+  artists.forEach((artistName: string) => {
+    const existing = user.artists.find((a: Artist) => a.name === artistName);
+    if (existing) {
+      existing.count += 1;
+    } else {
+      user.artists.push({ name: artistName, count: 1});
+    }
+  });
+
+  await user.save();
 
   console.log('User created: ', user);
 

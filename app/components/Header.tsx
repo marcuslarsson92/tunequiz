@@ -1,21 +1,20 @@
+// app/components/Header.tsx
 import React from 'react';
 import Image from 'next/image';
 
 const Header = () => {
   return (
     <header className="w-full">
-      {/* Headerbild med en container som anpassar sig för mobiler */}
+      {/* Header which adjust to fit diffrent screens */}
       <div className="relative w-full h-80 md:h-80 lg:h-80">
         <Image
-          src="/images/header.jpg" // Placera bilden i public/images/
+          src="/images/header.jpg"
           alt="Header Background"
           fill
           style={{ objectFit: 'cover' }}
-          priority // Om bilden ska laddas snabbt (above the fold)
+          priority // For fast loading
         />
       </div>
-
-      {/* Text under bilden */}
         <h1 className="text-[#227cbd] text-center py-4 text-4xl md:text-4xl font-bold">TuneQuiz</h1>
     </header>
   );

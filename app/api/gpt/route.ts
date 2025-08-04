@@ -2,11 +2,6 @@
 import { NextResponse } from 'next/server';
 import OpenAI from 'openai';
 
-// interface ChatMessage {
-//   role: 'user' | 'assistant' | 'system';
-//   content: string;
-// }
-
 interface QuizQuestion {
   artist: string;
   questionText: string;
@@ -19,7 +14,6 @@ interface QuizData {
   summary: string;
 }
 
-// Initialize OpenAI with API key
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY!,
 });
@@ -29,7 +23,7 @@ const openai = new OpenAI({
  */
 async function generateQuiz(
   artists: string[],
-  nbrQuestions = 10
+  nbrQuestions = 5
 ): Promise<QuizData> {
   const artistsString = artists.join(', ');
   const prompt = `
@@ -86,7 +80,7 @@ Format the output as a JSON object with the following structure without any code
     parsed = JSON.parse(noFences);
   }
 
-  // Basic runtime shape-check (optional, you can expand these checks)
+  // Basic runtime shape-check
   if (
     typeof parsed === 'object' &&
     parsed !== null &&

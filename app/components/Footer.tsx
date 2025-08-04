@@ -6,7 +6,7 @@ const Footer = () => {
     <footer className="footer footer-center bg-primary text-primary-content p-10">
   <aside>
       <Image
-          src="/images/logo.png" // Filen måste ligga i /public/images/logo.png   
+          src="/images/logo.png" // Picture must be in /public/images/  
           width={200}
           height={200}
           alt="Footer logo"

@@ -54,14 +54,13 @@ export default function PlayQuiz() {
   const { data: session } = useSession();
   const { quizData } = useQuiz();
 
-  // Hookar – måste ligga före alla villkor
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [showCorrectAnswer, setShowCorrectAnswer] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [activeDevice, setActiveDevice] = useState('');
   const [currentTrack, setCurrentTrack] = useState('');
 
-  // Hämta aktiv Spotify-enhet
+  // Get active Spotify unit
   const getActiveDevice = useCallback(async () => {
     if (!session?.accessToken) return;
 
@@ -79,17 +78,16 @@ export default function PlayQuiz() {
     }
   }, [session?.accessToken]);
 
-  // Nollställ visning av korrekt svar vid ny fråga
+  // Reset transparancy of correct answer when new question
   useEffect(() => {
     setShowCorrectAnswer(false);
   }, [currentQuestionIndex]);
 
-  // Kör bara en gång när session-token blir tillgänglig
+  // Do once when session-token is available
   useEffect(() => {
     getActiveDevice();
   }, [getActiveDevice]);
 
-  // Efter alla hookar kan vi conditional-rendera
   if (!quizData) {
     return (
       <div className="flex items-center justify-center h-screen bg-blue-950">
@@ -117,7 +115,6 @@ export default function PlayQuiz() {
     ? quizData.questions[currentQuestionIndex]
     : null;
 
-  // Spela artistens toppspår
   const playArtistTopTrack = async (artistName: string) => {
     if (!session?.accessToken) {
       alert('No Spotify access token found. Please log in.');
@@ -172,7 +169,6 @@ export default function PlayQuiz() {
     }
   };
 
-  // Pausa uppspelning
   const pausePlayback = async () => {
     if (!session?.accessToken) {
       alert('No Spotify access token found.');
