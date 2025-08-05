@@ -1,8 +1,8 @@
 // app/createQuiz/CreateQuizClient.tsx
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useState, useEffect, useTransition } from 'react';
+import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import { useQuiz } from '../../providers';
@@ -15,6 +15,7 @@ export default function CreateQuizClient() {
   const { setQuizData } = useQuiz();
   const [artists, setArtists] = useState<string[]>(['']);
   const [nbrQuestions, setNbrQuestions] = useState<number>(10);
+  const [isPending, startTransition] = useTransition();
 
   // Redirect if not logged in
   useEffect(() => {
@@ -32,12 +33,15 @@ export default function CreateQuizClient() {
 
   // Manually generate quiz 
   const generateQuiz = async () => {
+
     const artistsToSend = artists.filter(a => a.trim());
     if (!artistsToSend.length) {
       alert('Please enter at least one artist.');
       return;
     }
+
     setIsLoading(true);
+
     try {
       const res = await fetch('/api/gpt', {
         method: 'POST',
@@ -47,7 +51,20 @@ export default function CreateQuizClient() {
       if (!res.ok) throw new Error(res.statusText);
       const data = await res.json();
       setQuizData(data);
-      router.push('/playQuiz');
+
+      void fetch('/api/users/save',{
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json'},
+        body: JSON.stringify({
+        email: email,
+        artists: artistsToSend
+      })
+      });
+
+      startTransition(() => {
+        router.push('/playQuiz');      
+      });
+      
     } catch (err: unknown) {
         const message =
         err instanceof Error ? err.message : 'Unknown error';
@@ -56,27 +73,12 @@ export default function CreateQuizClient() {
       setIsLoading(false);
     }
 
-    await fetch('/api/users/save',{
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json'},
-      body: JSON.stringify({
-        email: email,
-        artists: artistsToSend
-      })
-    });
-
-    await fetch('/api/users/updateArtists', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        email: email,
-        artists: artistsToSend,
-      }),
-    });
   };
 
   // Auto generate based on top artists from database
   const generateAutoQuiz = async () => {
+
+    setIsLoading(true);
 
     const res = await fetch('/api/users/topArtists', {
       method: 'GET',
@@ -88,7 +90,6 @@ export default function CreateQuizClient() {
 
     console.log("Top 5: " + artistsToSend);
     
-    setIsLoading(true);
     try {
       const res = await fetch('/api/gpt', {
         method: 'POST',
@@ -98,7 +99,11 @@ export default function CreateQuizClient() {
       if (!res.ok) throw new Error(res.statusText);
       const data = await res.json();
       setQuizData(data);
-      router.push('/playQuiz');
+
+       startTransition(() => {
+        router.push('/playQuiz');      
+      });
+
     } catch (err: unknown) {
         const message =
         err instanceof Error ? err.message : 'Unknown error';
@@ -109,7 +114,7 @@ export default function CreateQuizClient() {
    
   }
 
-  if (isLoading) {
+  if (isLoading || isPending) {
     return (
       <div className="flex flex-col items-center">
         <h1 className="mb-4">Preparing your quiz…</h1>
@@ -162,16 +167,12 @@ export default function CreateQuizClient() {
         onClick={generateQuiz}
         className={`btn btn-primary ${isLoading ? 'loading' : ''}`}
         disabled={isLoading}
-      >
-        {isLoading ? 'Generating…' : 'Create Quiz'}
-      </button>
+      >Create Quiz</button>
       <button
         onClick={generateAutoQuiz}
         className={`btn btn-primary ml-2 ${isLoading ? 'loading' : ''}`}
         disabled={isLoading}
-      >
-        {isLoading ? 'Generating…' : 'Create Quiz Based on top 5'}
-      </button>
+      >Create Quiz Based on top 5</button>
     </div>
   );
 }
