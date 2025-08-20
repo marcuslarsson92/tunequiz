@@ -42,13 +42,6 @@ interface SpotifyTopTracksResponse {
   tracks: SpotifyTrack[];
 }
 
-// interface Question {
-//   questionText: string;
-//   options: string[];
-//   correctOption: string;
-//   artist?: string;
-// }
-
 export default function PlayQuizClient() {
   const router = useRouter();
   const { data: session } = useSession();
